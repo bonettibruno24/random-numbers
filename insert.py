@@ -4,6 +4,7 @@ import os
  
 
 numbers = [33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26, 0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10,  5, 24, 16]
+last_moves = []
 
 def get_valid_numbers(prompt):
     while True:
@@ -24,6 +25,31 @@ def get_valid_numbers(prompt):
 def get_last_digit(valor):
     return int(str(valor)[-1])
 
+class GameAnalytics:
+    def __init__(self):
+        self.__sequence__numbers__ = []
+    def last_play_analytics(self, prompt):
+        last_play_analytics = input(prompt)
+        try:
+            self.__sequence__numbers__ = [int(num.strip()) for num in last_play_analytics.split(',')]
+            return self.__sequence__numbers__
+        except ValueError:
+            print("Valor inválido. Tente novamente.")
+            return self.last_play_analytics(prompt)
+
+    def ask_init(self, command):
+        result = input(command).strip().lower()
+        if result == "s":
+            self.last_play_analytics("Insira sequência numérica: ")
+            return True
+        elif result == "n":
+            return False
+        else:
+            print("Opção Inválida")
+            self.ask_init(command)
+
+game = GameAnalytics()
+game.ask_init("Deseja iniciar a análise? (S/N): ")
 numero = get_valid_numbers("Digite um número: ")
 number1 = get_valid_numbers("Digite o segundo numero: ")
 number2 = get_valid_numbers("Digite o terceiro numero: ")
@@ -39,17 +65,18 @@ later_position = numbers[position_array_index + 1] if position_array_index < len
 algarism_previus = get_last_digit(previous_position)
 algarism_later = get_last_digit(later_position)
 print(f"algarismo do posterior = {algarism_previus} & ultimo alg= {algarism_later}")
-
 print(f"posição iin array {position_array_index}, numero anterior: : {previous_position}, numero posterior: : {later_position}")
-
 print(f"n1= {last_digit_insert} & n2 = {last_digit_insert1} & n3 = {last_digit_insert2}")
+
+print("sequencia numerica", game.__sequence__numbers__)
 
 df = pd.DataFrame({
     'Valor 1': [numero],
     'Valor 2': [number1],
     'Valor 3': [number2],
     'Resultado' : [None],
-    'Probabilidade': [None]
+    'Probabilidade': [None],
+    'Ultimas Jogadas': [game.__sequence__numbers__]
     })
 
 def veirify_algarism():
@@ -98,10 +125,10 @@ else:
 # print("col 1 ", df_ler['Valor 1'])
 # print("col 2 ",df_ler['Valor 2'])
 # print("col 3 ",df_ler['Valor 3'])
+
 if os.path.exists(path):
     df_existente = pd.read_excel(path, sheet_name='Sheet1')
     df_atualizado = pd.concat([df_existente, df], ignore_index=True)
-
     with pd.ExcelWriter(path, engine='openpyxl', mode= 'a', if_sheet_exists='replace') as writer:
         df_atualizado.to_excel(writer, sheet_name='Sheet1', index=False)
         print(f"Dados inseridos com sucesso! {path}")
@@ -132,32 +159,56 @@ wb.save(path)
 P(A) = EventosFavoraveis/EventosPossiveis
 Probabilidade: verificar na tabela num1 e num2 inseridos 
 """
+print(df['Resultado'])
 
-def calculate_probability(df, inputs):
-    numero, number1, number2 = inputs
+def calculate_probability(df, numero, number1):
+    total_aperitions = 0
+    casos_favoraveis = 0
 
-    total_aparicoes = (
-        ((df['Valor 1'] == numero) | (df['Valor 2'] == numero) | (df['Valor 3'] == numero)) &
-        ((df['Valor 1'] == number1) | (df['Valor 2'] == number1) | (df['Valor 3'] == number1)) &
-        ((df['Valor 1'] == number2) | (df['Valor 2'] == number2) | (df['Valor 3'] == number2))
-    ).sum()
-
-    casos_favoraveis = df[
-        ((df['Valor 1'] == numero) | (df['Valor 2'] == numero) | (df['Valor 3'] == numero)) &
-        ((df['Valor 1'] == number1) | (df['Valor 2'] == number1) | (df['Valor 3'] == number1)) &
-        ((df['Valor 1'] == number2) | (df['Valor 2'] == number2) | (df['Valor 3'] == number2)) &
-        (df['Resultado'] == "OK")
-    ].shape[0]
-
-       # Conta as aparições dos valores nas colunas específicas
-    count_valor1 = ((df['Valor 1'] == numero) | (df['Valor 1'] == number1)).sum()
-    count_valor2 = ((df['Valor 2'] == numero) | (df['Valor 2'] == number1)).sum()
-
-    # Calcula a probabilidade
-    probabilidade = casos_favoraveis / total_aparicoes if total_aparicoes > 0 else 0
+    for _, row in df.iterrows():
+        if row['Valor 1'] == numero and row['Valor 2'] == number1:
+            total_aperitions += 1
+            if row['Resultado'] == 'OK':
+                casos_favoraveis += 1
+    probabilidade = casos_favoraveis / total_aperitions if total_aperitions > 0 else 0
+    print(f"Total de vezes que {numero} e {number1} apareceram: {total_aperitions}")
+    print(f"Casos favoráveis ('OK'): {casos_favoraveis}")
+    print(f"Probabilidade de {numero} e {number1} com próximo input resultar em 'OK': {probabilidade:.2f}")
 
     return probabilidade
 
-inputs = (numero, number1, number2)  # Os números inseridos
-probabilidade = calculate_probability(df, inputs)
-print("teste probabilidade: ",probabilidade)
+calculate_probability(df, numero, number1)
+
+# def calculate_probability(df, inputs):
+#     numero, number1, number2 = inputs
+#     machine = df.shape[0]
+#     features = df.shape[1] -1
+#     eventos_favoraveis = df[(df['Valor 1'] == numero) & (df['Valor 2'] == number1) & (df['Valor 3'] == number2)].shape[0]
+#     print("teste",machine, features
+#     )
+
+#     total_aparicoes = (
+#         ((df['Valor 1'] == numero) | (df['Valor 2'] == numero) | (df['Valor 3'] == numero)) &
+#         ((df['Valor 1'] == number1) | (df['Valor 2'] == number1) | (df['Valor 3'] == number1)) &
+#         ((df['Valor 1'] == number2) | (df['Valor 2'] == number2) | (df['Valor 3'] == number2))
+#     ).sum()
+
+#     casos_favoraveis = df[
+#         ((df['Valor 1'] == numero) | (df['Valor 2'] == numero) | (df['Valor 3'] == numero)) &
+#         ((df['Valor 1'] == number1) | (df['Valor 2'] == number1) | (df['Valor 3'] == number1)) &
+#         ((df['Valor 1'] == number2) | (df['Valor 2'] == number2) | (df['Valor 3'] == number2)) &
+#         (df['Resultado'] == "OK")
+#     ].shape[0]
+
+#        # Conta as aparições dos valores nas colunas específicas
+#     count_valor1 = ((df['Valor 1'] == numero) | (df['Valor 1'] == number1)).sum()
+#     count_valor2 = ((df['Valor 2'] == numero) | (df['Valor 2'] == number1)).sum()
+
+#     # Calcula a probabilidade
+#     probabilidade = casos_favoraveis / total_aparicoes if total_aparicoes > 0 else 0
+
+#     return probabilidade
+
+# inputs = (numero, number1, number2)  # Os números inseridos
+# probabilidade = calculate_probability(df, inputs)
+# print("teste probabilidade: ",probabilidade)
