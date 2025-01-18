@@ -1,5 +1,6 @@
 import pandas as pd
 import os 
+from collections import Counter 
 
  
 
@@ -25,13 +26,30 @@ def get_valid_numbers(prompt):
 def get_last_digit(valor):
     return int(str(valor)[-1])
 
+def quick_sort(array):
+    if len(array) <= 1:
+        return array
+    else:
+        pivot = array[0]
+        left = [x for x in array[1:] if x < pivot]
+        right = [x for x in array[1:] if x >= pivot]
+        return quick_sort(left) + [pivot] + quick_sort(right)
+
 class GameAnalytics:
     def __init__(self):
         self.__sequence__numbers__ = []
+        
     def last_play_analytics(self, prompt):
         last_play_analytics = input(prompt)
         try:
             self.__sequence__numbers__ = [int(num.strip()) for num in last_play_analytics.split(',')]
+            last_digit = [get_last_digit(num) for num in self.__sequence__numbers__]
+            sorted_digits = quick_sort(last_digit)
+            frequency = Counter(sorted_digits)
+            fashion = frequency.most_common(1)[0]
+            print(f"Número que mais aparece (moda): {fashion[0]}, aparece {fashion[1]} vezes")
+            print("Ultimos algarismos da lista: ", last_digit)
+            print("ALgarismos ordenados: ", sorted_digits)
             return self.__sequence__numbers__
         except ValueError:
             print("Valor inválido. Tente novamente.")
@@ -48,12 +66,16 @@ class GameAnalytics:
             print("Opção Inválida")
             self.ask_init(command)
 
+
+# x = Counter('1, 2, 3, 4, 4, 4')
+# # print(x)
 game = GameAnalytics()
 game.ask_init("Deseja iniciar a análise? (S/N): ")
 numero = get_valid_numbers("Digite um número: ")
 number1 = get_valid_numbers("Digite o segundo numero: ")
 number2 = get_valid_numbers("Digite o terceiro numero: ")
     
+print("posição array: ",game.__sequence__numbers__)
 last_digit_insert = get_last_digit(numero)
 last_digit_insert1 = get_last_digit(number1)
 last_digit_insert2= get_last_digit(number2)
@@ -82,9 +104,20 @@ df = pd.DataFrame({
 def veirify_algarism():
     current_set = {numero, number1, number2}
     required_set = {0, 26, 32}
+
+    # teste = algarism_later or algarism_previus
+    # print(teste)
+
+    # print(f"Tipo de 'numero': {type(numero)}")
+    # print(f"Tipo de 'number1': {type(number1)}")
+    # print(f"Tipo de 'algarism_later': {type(algarism_later)}")
+    # print(f"Tipo de 'algarism_previus': {type(algarism_previus)}")
     if  last_digit_insert2 == last_digit_insert and last_digit_insert1:
         print(last_digit_insert2, "OK")
         return True 
+    elif numero or number1 == algarism_later or algarism_previus:
+        print(f"{numero}, {number1} ,{number2} aqui")
+        return True
     elif last_digit_insert2 == algarism_previus and algarism_later:
         print(f"{numero}, {number1} ,{number2} OK")
         return True
@@ -95,7 +128,7 @@ def veirify_algarism():
         print(f"{numero}, {number1} ,{number2} X")
         return False
 
-print("teste function",veirify_algarism())
+# print("teste function",veirify_algarism())
 
 
 from openpyxl import load_workbook
