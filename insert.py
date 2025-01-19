@@ -38,19 +38,26 @@ def quick_sort(array):
 class GameAnalytics:
     def __init__(self):
         self.__sequence__numbers__ = []
+        self.df_most_frequent = pd.DataFrame(columns=['Number', 'Frequency'])
+
+    def process_fashion_to_dataframe(self, ordered_numbers):
+        frequency = Counter(ordered_numbers)
+        fashion = frequency.most_common()
+        self.df_most_frequent = pd.DataFrame(fashion, columns=['Number', 'Frequency'])
+        print("Termine de preencher os numeros para apresentar na planilha!", fashion)
+        print("Termine de preencher os numeros para apresentar na planilha!", self.df_most_frequent)
+        return self.df_most_frequent
         
     def last_play_analytics(self, prompt):
         last_play_analytics = input(prompt)
         try:
             self.__sequence__numbers__ = [int(num.strip()) for num in last_play_analytics.split(',')]
             last_digit = [get_last_digit(num) for num in self.__sequence__numbers__]
-            sorted_digits = quick_sort(last_digit)
-            frequency = Counter(sorted_digits)
-            fashion = frequency.most_common(1)[0]
-            print(f"Número que mais aparece (moda): {fashion[0]}, aparece {fashion[1]} vezes")
-            print("Ultimos algarismos da lista: ", last_digit)
-            print("ALgarismos ordenados: ", sorted_digits)
-            return self.__sequence__numbers__
+            ordered_numbers = quick_sort(last_digit)
+            df_frequency_numbers = self.process_fashion_to_dataframe(ordered_numbers)
+            # print("Ultimos algarismos da lista: ", last_digit)
+            # print("ALgarismos ordenados: ", sorted_digits)
+            return df_frequency_numbers
         except ValueError:
             print("Valor inválido. Tente novamente.")
             return self.last_play_analytics(prompt)
@@ -58,7 +65,6 @@ class GameAnalytics:
     def ask_init(self, command):
         result = input(command).strip().lower()
         if result == "s":
-            self.last_play_analytics("Insira sequência numérica: ")
             return True
         elif result == "n":
             return False
@@ -71,11 +77,12 @@ class GameAnalytics:
 # # print(x)
 game = GameAnalytics()
 game.ask_init("Deseja iniciar a análise? (S/N): ")
+df_most_frequent = game.last_play_analytics("Insira sequência numérica: ")
 numero = get_valid_numbers("Digite um número: ")
 number1 = get_valid_numbers("Digite o segundo numero: ")
 number2 = get_valid_numbers("Digite o terceiro numero: ")
     
-print("posição array: ",game.__sequence__numbers__)
+print("sequencia numericao: ",game.__sequence__numbers__)
 last_digit_insert = get_last_digit(numero)
 last_digit_insert1 = get_last_digit(number1)
 last_digit_insert2= get_last_digit(number2)
@@ -90,7 +97,8 @@ print(f"algarismo do posterior = {algarism_previus} & ultimo alg= {algarism_late
 print(f"posição iin array {position_array_index}, numero anterior: : {previous_position}, numero posterior: : {later_position}")
 print(f"n1= {last_digit_insert} & n2 = {last_digit_insert1} & n3 = {last_digit_insert2}")
 
-print("sequencia numerica", game.__sequence__numbers__)
+print("Tamanho do array Number:", len(df_most_frequent['Number']))
+print("Tamanho do array Frequency:", len(df_most_frequent['Frequency']))
 
 df = pd.DataFrame({
     'Valor 1': [numero],
@@ -98,7 +106,7 @@ df = pd.DataFrame({
     'Valor 3': [number2],
     'Resultado' : [None],
     'Probabilidade': [None],
-    'Ultimas Jogadas': [game.__sequence__numbers__]
+    'Ultimas Jogadas': [game.__sequence__numbers__] 
     })
 
 def veirify_algarism():
@@ -161,7 +169,7 @@ else:
 
 if os.path.exists(path):
     df_existente = pd.read_excel(path, sheet_name='Sheet1')
-    df_atualizado = pd.concat([df_existente, df], ignore_index=True)
+    df_atualizado = pd.concat([df_existente, df, df_most_frequent], ignore_index=True)
     with pd.ExcelWriter(path, engine='openpyxl', mode= 'a', if_sheet_exists='replace') as writer:
         df_atualizado.to_excel(writer, sheet_name='Sheet1', index=False)
         print(f"Dados inseridos com sucesso! {path}")
