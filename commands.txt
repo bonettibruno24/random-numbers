@@ -1,0 +1,9 @@
+source excel/bin/activate
+
+5,8,32,7,10,12,21,28,35,27,2,13,4,6,0,32,1,12,22,33,4,31,2,7,27,2,3
+
+5, 8, 32, 7, 10, 12, 21, 28, 35, 27, 2, 13, 4, 6, 0, 32, 1, 12, 22, 33, 4, 31, 2, 7, 27, 2, 3, 32, 2, 3, 5, 27, 31, 2, 3
+
+Preciso faazer uma metodolia para quando eu rodar uma vez este meu código, iniciando com a pergunta para inserir a sequencia numerica, ao preencher a variavél sequence__numbers que é um array que inicia-se vazio, eu quero fazer de que alguma forma já inicie o meu código com base na ultima inserção que foi uma lista numerica e não crie uma tabela do zero ttoda vez e pessa novamente para eu inserir os numeros:
+
+Utilizar as ultimas 50 rodadas inseridas? 

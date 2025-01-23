@@ -65,8 +65,7 @@ while True:
                 last_digit = [get_last_digit(num) for num in self.__sequence__numbers__]
                 ordered_numbers = quick_sort(last_digit)
                 df_frequency_numbers = self.process_fashion_to_dataframe(ordered_numbers)
-                # print("Ultimos algarismos da lista: ", last_digit)
-                # print("ALgarismos ordenados: ", sorted_digits)
+                print("chekando função aqui aqui ",df_frequency_numbers)
                 return df_frequency_numbers
             except ValueError:
                 print("Valor inválido. Tente novamente.")
@@ -75,26 +74,70 @@ while True:
         def ask_init(self, command):
             result = input(command).strip().lower()     
             if result == "s":
-                excel_colum_g = pd.read_excel(path)
-                ultiuma_jogada = excel_colum_g['Ultimas Jogadas'].values[-1]
-                print(ultiuma_jogada)
-                self.__sequence__numbers__  = ultiuma_jogada
+                self.df_most_frequent = game.last_play_analytics("Cadastre a sequência numérica: ")
+                print("Sequência de números: ", self.df_most_frequent)    
                 return True  
             elif result == "n":
-                    self.df_most_frequent = game.last_play_analytics("Cadastre nova sequência numérica: ")
-            
+                excel_colum_g = pd.read_excel(path)
+                ultiuma_jogada = excel_colum_g['Ultimas Jogadas'].values[-1]
+                print(type(ultiuma_jogada))
+                try:
+                    if isinstance(ultiuma_jogada, str):
+                        cleaned_data = ultiuma_jogada.replace('[', '').replace(']', '').strip()
+                        sequence_numbers = [int(num.strip()) for num in cleaned_data.split(",")]
+                        last_digit = [get_last_digit(num) for num in sequence_numbers]
+                        print(f"Sequência numérica processada77777777: {last_digit}")
+                        self.__sequence__numbers__  = last_digit
+                        print(f"Sequência numérica processada: {sequence_numbers}")
+                        print(f"Sequência numérica processada: {sequence_numbers}", type(sequence_numbers))
+                        self.process_fashion_to_dataframe(last_digit)
+                        print("Sequência de números5555: ", self.df_most_frequent)
+                        print("Sequência de números: ", type(self.df_most_frequent))
+                        return False
+                    else:
+                        raise ValueError("Formato inserido inválido.")
+                except Exception as e:
+                    print("Erro ao processar a sequência de números:", e)
+                    return False
 
+                print(ultiuma_jogada)
+                print(type(ultiuma_jogada))
+                return False
+            else:
+                print("Comando inválido. Tente novamente.")
+                return self.ask_init(command)
+        # def ask_restart(self, command):
+        #     result = input(command).strip().lower()     
+        #     if result == "s":
+        #         print("Sequência de números: ", self.df_most_frequent)
+        #         print("Sequência de números: ", type(self.df_most_frequent))    
+        #         return True  
+        #     elif result == "n":
+        #         self.df_most_frequent = game.last_play_analytics("Cadastre a sequência numérica: ")
+        #         return False
+
+
+            
 
     # x = Counter('1, 2, 3, 4, 4, 4')
     # # print(x)
-
-    excel_colum_g = pd.read_excel(path)
-    ultiuma_jogada = excel_colum_g['Ultimas Jogadas'].values[-1]
-    print(f"Último valor da coluna G: {ultiuma_jogada}")
+    # excel_colum_g = pd.read_excel(path)
+    #             ultiuma_jogada = excel_colum_g['Ultimas Jogadas'].values[-1] ##preciso pegar os terminais do array retornado 
+    #             print(type(ultiuma_jogada))
+    #             print(ultiuma_jogada)
+    #             teste = self.process_fashion_to_dataframe(ultiuma_jogada)
+    #             print("chekando função aqui aqui ",teste)
+    #             print("Sequência de números: ", self.df_most_frequent)
+    #             print("Sequência de números: ", type(self.df_most_frequent))
+    
+    
+    # print(f"Sua lista atual: {ultiuma_jogada}")
+    # print(f"Último valor da coluna G:", type(ultiuma_jogada))
     game = GameAnalytics()
-
-    game.ask_init("Deseja continuar utilizando a mesma sequência anterior de 50 numeros? (S/N): ")
-    print(f"Sequência de números: {game.__sequence__numbers__}")
+    # game.ask_init("Deseja continuar utilizando a mesma sequência anterior de 50 numeros? (S/N): ")
+    game.ask_init("Deseja insir os ultimas rodadas? (S/N): ")
+    print(f"Sequência de números22222: {game.df_most_frequent}")
+    print(f"Sequência de números22222:", type(game.df_most_frequent))
    
         
     numero = get_valid_numbers("Digite um número: ")
@@ -139,9 +182,12 @@ while True:
         'Resultado' : [None],
         'Prob1': [None],
         'Prob2': [None],
-        'Ultimas Jogadas': [game.__sequence__numbers__] 
+        'Ultimas Jogadas': [game.df_most_frequent] 
         })
+    if game.df_most_frequent is not None:
+        df['Ultimas Jogadas'] = [game.__sequence__numbers__]
     # df = df.dropna(axis=1, how='all')
+
 
     print("printando df: ", df)
     def veirify_algarism():
@@ -200,29 +246,36 @@ while True:
     # print("col 3 ",df_ler['Valor 3'])
 
     """
-    Prob1: Verifica numero de vezes em que aparece o numero && numb1 na lista de ultimas 50 jogadas e divide por 50.
+    Prob1: Verifica quantas vezes o valor da variavel numero && numb1 está presente na lista dos ultimas 50 jogadas e divide por 50.
 
     Prob2: Verifica o num2 no excel quantas vezes ele saiu como OK na col 3 
     """
 
     def calculate_probability(df, numero, number1):
+
+        print(type(df))  # Deve exibir: <class 'pandas.core.frame.DataFrame'>
+        print(f"Numero: {numero}, Number1: {number1}")
+        print(f"favorable_cases: ", game.df_most_frequent)
         favorable_cases = (
             df[df['Number'] == numero]['Frequency'].sum() +
             df[df['Number'] == number1]['Frequency'].sum()
         )
         total_operations = len(game.__sequence__numbers__)
+
+        print(f"favorable_cases: {favorable_cases}, {total_operations}")
         probability = (favorable_cases / total_operations) * 100 if total_operations > 0 else 0
+        print("printando probabilidade", probability)
         print(f"Probabilidade1: {probability:.2f}%")
         formated_probability = f"{probability:.2f}%"
         return formated_probability
 
-
+    #Numbers contém os terminais de cada número
+    print("teste aqui aqui aqui:", game.df_most_frequent['Number'])
     probability = calculate_probability(game.df_most_frequent, numero, number1)
     if probability != "0.00%":
         df.at[0, 'Prob1'] = probability
     else:
         df['Prob1'] = None
-    # print(df)
 
     def calculate_probability_cell(df, number2):
         favorable_cases = len(df[(df['Valor 3'] == number2) & (df['Resultado'] == 'OK')])
@@ -233,7 +286,8 @@ while True:
         
         probability = (favorable_cases / total_operations) * 100 if total_operations > 0 else 0
         formated_probability = f"{probability:.2f}%"
-        print(f"favorable_cases: {favorable_cases}, {total_operations}")
+        # print(f"favorable_cases: {favorable_cases}, {total_operations}")
+
 
         return formated_probability
 
