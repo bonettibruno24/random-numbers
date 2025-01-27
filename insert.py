@@ -1,12 +1,14 @@
 import pandas as pd
 import os 
-from collections import Counter 
+from collections import Counter
+import sys
 
  # SAVED COMMIT ALL PROJECT PRE IMPLEMENTED LIB PYWIN32
 while True:
     numbers = [33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26, 0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10,  5, 24, 16]
     last_moves = []
-    path = '/home/twobe/Documentos/projeto1/final.xlsx'
+    path = os.path.join(os.getcwd(), "final.xlsx")
+    # path = 'C:\Users\Maria\OneDrive\Área de Trabalho\project'
 
     def get_valid_numbers(prompt):
      while True:
@@ -130,12 +132,15 @@ while True:
     # print(f"Sua lista atual: {ultiuma_jogada}")
     # print(f"Último valor da coluna G:", type(ultiuma_jogada))
     game = GameAnalytics()
+    path = os.path.join(os.getcwd(), "final.xlsx")
+    print(f"O caminho para o arquivo é: {path}")
+
+    df_atualizado = pd.read_excel(path, sheet_name='Sheet1')
     # game.ask_init("Deseja continuar utilizando a mesma sequência anterior de 50 numeros? (S/N): ")
     game.ask_init("Deseja insir os ultimas rodadas? (S/N): ")
     # print(f"Sequência de números22222: {game.df_most_frequent}")
     # print(f"Sequência de números22222:", type(game.df_most_frequent))
    
-        
     numero = get_valid_numbers("Digite um número: ")
     number1 = get_valid_numbers("Digite o segundo numero: ")
     number2 = get_valid_numbers("Digite o terceiro numero: ")
@@ -286,7 +291,17 @@ while True:
 
         return formated_probability
 
-    df_atualizado = pd.read_excel(path, sheet_name='Sheet1')
+    
+    if getattr(sys, 'frozen', False):
+        # Se o script está sendo executado a partir de um executável
+        caminho_final = os.path.join(sys._MEIPASS, 'final.xlsx')
+    else:
+        # Se o script está sendo executado no ambiente de desenvolvimento
+        caminho_final = os.path.join(os.getcwd(), 'final.xlsx')
+
+    print(f"O caminho para o arquivo é: {caminho_final}")
+
+    # Lendo o arquivo Excel
     # print(df_atualizado)
     probability_two = calculate_probability_cell(df_atualizado, number2)
 
@@ -300,8 +315,7 @@ while True:
 
 
     if os.path.exists(path):
-        df_existente = pd.read_excel(path, sheet_name='Sheet1')
-        df_existente = df_existente.dropna(axis=1, how='all')
+        df_existente = pd.read_excel(caminho_final, sheet_name='Sheet1')
         df_atualizado = pd.concat([df_existente, df ], ignore_index=True)
         with pd.ExcelWriter(path, engine='openpyxl', mode= 'a', if_sheet_exists='replace') as writer:
             df_atualizado.to_excel(writer, sheet_name='Sheet1', index=False)
