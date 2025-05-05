@@ -2,7 +2,7 @@ from openpyxl import load_workbook
 from openpyxl.styles import PatternFill
 from openpyxl.utils.dataframe import dataframe_to_rows
 
-excel_file = '/home/twobe/Documentos/projeto1/meu_arquivo.xlsx'
+excel_file = 'Documentos/projeto1/meu_arquivo.xlsx'
 wb = load_workbook(excel_file)
 ws = wb.active
 
