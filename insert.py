@@ -31,9 +31,9 @@ while True:
     """            
 
     def get_last_digit(valor):
-        if valor is None:  # Caso o valor seja None, retornamos um indicador ou mensagem
+        if valor is None:  # Caso o valor seja None, retorna um indicador ou mensagem
             return None
-        if isinstance(valor, int):  # Verifica se o valor é um número inteiro
+        if isinstance(valor, int):  # Verifica se o valor é inteiro
             return int(str(valor)[-1])
         else:
             raise ValueError("O valor fornecido não é um número válido.")
@@ -66,7 +66,6 @@ while True:
                 last_digit = [get_last_digit(num) for num in self.__sequence__numbers__]
                 ordered_numbers = quick_sort(last_digit)
                 df_frequency_numbers = self.process_fashion_to_dataframe(ordered_numbers)
-                    # print("chekando função aqui aqui ",df_frequency_numbers)
                 return df_frequency_numbers
             except ValueError:
                 print("Valor inválido. Tente novamente.")
@@ -87,10 +86,7 @@ while True:
                         last_digit = [get_last_digit(num) for num in sequence_numbers]
                         self.__sequence__numbers__  = last_digit
                         print(f"Sequência numérica processada: {sequence_numbers}")
-                        # print(f"Sequência numérica processada: {sequence_numbers}", type(sequence_numbers))
                         self.process_fashion_to_dataframe(last_digit)
-                        # print("Sequência de números5555: ", self.df_most_frequent)
-                        # print("Sequência de números: ", type(self.df_most_frequent))
                         return False
                     else:
                         raise ValueError("Formato inserido inválido.")
@@ -104,43 +100,15 @@ while True:
             else:
                 print("Comando inválido. Tente novamente.")
                 return self.ask_init(command)
-        # def ask_restart(self, command):
-        #     result = input(command).strip().lower()     
-        #     if result == "s":
-        #         print("Sequência de números: ", self.df_most_frequent)
-        #         print("Sequência de números: ", type(self.df_most_frequent))    
-        #         return True  
-        #     elif result == "n":
-        #         self.df_most_frequent = game.last_play_analytics("Cadastre a sequência numérica: ")
-        #         return False
 
-
-            
-
-    # x = Counter('1, 2, 3, 4, 4, 4')
-    # # print(x)
-    # excel_colum_g = pd.read_excel(path)
-    #             ultiuma_jogada = excel_colum_g['Ultimas Jogadas'].values[-1] ##preciso pegar os terminais do array retornado 
-    #             print(type(ultiuma_jogada))
-    #             print(ultiuma_jogada)
-    #             teste = self.process_fashion_to_dataframe(ultiuma_jogada)
-    #             print("chekando função aqui aqui ",teste)
-    #             print("Sequência de números: ", self.df_most_frequent)
-    #             print("Sequência de números: ", type(self.df_most_frequent))
-    
-    
-    # print(f"Sua lista atual: {ultiuma_jogada}")
-    # print(f"Último valor da coluna G:", type(ultiuma_jogada))
+ 
     game = GameAnalytics()
     path = os.path.join(os.getcwd(), "final.xlsx")
     print(f"O caminho para o arquivo é: {path}")
 
     df_atualizado = pd.read_excel(path, sheet_name='Sheet1')
-    # game.ask_init("Deseja continuar utilizando a mesma sequência anterior de 50 numeros? (S/N): ")
     game.ask_init("Deseja insir os ultimas rodadas? (S/N): ")
-    # print(f"Sequência de números22222: {game.df_most_frequent}")
-    # print(f"Sequência de números22222:", type(game.df_most_frequent))
-   
+ 
     numero = get_valid_numbers("Digite um número: ")
     number1 = get_valid_numbers("Digite o segundo numero: ")
     number2 = get_valid_numbers("Digite o terceiro numero: ")
@@ -165,15 +133,9 @@ while True:
         )
         algarism_previus = get_last_digit(previous_position)
         algarism_later = get_last_digit(later_position)
-
-        # print(f"algarismo do anterior = {algarism_previus} & último algarismo = {algarism_later}")
-        # print(f"posição no array {position_array_index}, número anterior: {previous_position}, número posterior: {later_position}")
-        # print(f"n1= {last_digit_insert} & n2 = {last_digit_insert1} & n3 = {last_digit_insert2}")
     else:
         print("Nenhum número foi fornecido, cálculo ignorado.")
-
-    # print("Tamanho do array Number:", len(df_most_frequent['Number']))
-    # print("Tamanho do array Frequency:", len(df_most_frequent['Frequency']))
+     
 
     number2 = number2 if number2 is not None and number2 != '' else None
     df = pd.DataFrame({
@@ -187,21 +149,12 @@ while True:
         })
     if game.df_most_frequent is not None:
         df['Ultimas Jogadas'] = [game.__sequence__numbers__]
-    # df = df.dropna(axis=1, how='all')
 
 
-    # print("printando df: ", df)
+
     def veirify_algarism():
         current_set = {numero, number1, number2}
         required_set = {0, 26, 32}
-
-        # teste = algarism_later or algarism_previus
-        # print(teste)
-
-        # print(f"Tipo de 'numero': {type(numero)}")
-        # print(f"Tipo de 'number1': {type(number1)}")
-        # print(f"Tipo de 'algarism_later': {type(algarism_later)}")
-        # print(f"Tipo de 'algarism_previus': {type(algarism_previus)}")
         if  last_digit_insert2 == last_digit_insert and last_digit_insert1:
             print(last_digit_insert2, "OK")
             return True 
@@ -218,20 +171,9 @@ while True:
             print(f"{numero}, {number1} ,{number2} X")
             return False
 
-    # print("teste function",veirify_algarism())
-
 
     from openpyxl import load_workbook
     from openpyxl.styles import PatternFill, Alignment
-
-    # green = PatternFill("solid", fgColor="DDDDDD")
-    # blue = PatternFill(fill_type='solid', start_color='00FF00', end_color='00FF00')
-
-    # if veirify_algarism():
-    #     WS['D2'] = "Ok"
-
-    # else:
-    #     WS['D2'] = "X"
 
     result_verify_algarism = veirify_algarism()
 
@@ -240,11 +182,6 @@ while True:
     else:
         df['Resultado'] = "X"
         
-    # print(df)
-    # print(df_ler.columns)
-    # print("col 1 ", df_ler['Valor 1'])
-    # print("col 2 ",df_ler['Valor 2'])
-    # print("col 3 ",df_ler['Valor 3'])
 
     """
     Prob1: Verifica quantas vezes o valor da variavel numero && numb1 está presente na lista dos ultimas 50 jogadas e divide por 50.
@@ -253,24 +190,16 @@ while True:
     """
 
     def calculate_probability(df, numero, number1):
-
-       # print(type(df))l  # Deve exibir: <class 'pandas.core.frame.DataFrame'>
-        # print(f"Numero: {numero}, Number1: {number1}")
-        # print(f"favorable_cases: ", game.df_most_frequent)
         favorable_cases = (
             df[df['Number'] == numero]['Frequency'].sum() +
             df[df['Number'] == number1]['Frequency'].sum()
         )
         total_operations = len(game.__sequence__numbers__)
-
-        # print(f"favorable_cases: {favorable_cases}, {total_operations}")
         probability = (favorable_cases / total_operations) * 100 if total_operations > 0 else 0
-        # print("printando probabilidade", probability)
         print(f"Probabilidade1: {probability:.2f}%")
         formated_probability = f"{probability:.2f}%"
         return formated_probability
 
-    #Numbers contém os terminais de cada número
     probability = calculate_probability(game.df_most_frequent, numero, number1)
     if probability != "0.00%":
         df.at[0, 'Prob1'] = probability
@@ -280,15 +209,10 @@ while True:
     def calculate_probability_cell(df, number2):
         favorable_cases = len(df[(df['Valor 3'] == number2) & (df['Resultado'] == 'OK')])
         total_operations = len(df[(df['Valor 3'] == number2)])
-
         print(f"favorable_cases: {favorable_cases}")
-        print(f"total_operations: {total_operations}")
-        
+        print(f"total_operations: {total_operations}")     
         probability = (favorable_cases / total_operations) * 100 if total_operations > 0 else 0
         formated_probability = f"{probability:.2f}%"
-        # print(f"favorable_cases: {favorable_cases}, {total_operations}")
-
-
         return formated_probability
 
     
@@ -300,17 +224,11 @@ while True:
         caminho_final = os.path.join(os.getcwd(), 'final.xlsx')
 
     print(f"O caminho para o arquivo é: {caminho_final}")
-
-    # Lendo o arquivo Excel
-    # print(df_atualizado)
     probability_two = calculate_probability_cell(df_atualizado, number2)
 
     occurrences = len(df_atualizado[df_atualizado['Valor 3'] == number2])
     print(f"O número {number2} apareceu {occurrences} vezes na coluna 'Valor 3'.")
     df.at[0, 'Prob2'] = probability_two
-
-    # print(df_atualizado)
-        # print(f"Probabilidade2: {probability:.2f}%")
 
 
 
@@ -323,8 +241,6 @@ while True:
     else:
         df.to_excel(path, index=False)
         print(f"Dados inseridos com sucesso! {path}")
-
-
 
 
     wb = load_workbook(path)
@@ -346,33 +262,3 @@ while True:
             elif cell.value == 'X':
                 cell.fill = red_fill
     wb.save(path)
-
-
-    # def calculate_probability(df, inputs):
-    #     numero, number1, number2 = inputs
-    #     machine = df.shape[0]
-    #     features = df.shape[1] -1
-    #     eventos_favoraveis = df[(df['Valor 1'] == numero) & (df['Valor 2'] == number1) & (df['Valor 3'] == number2)].shape[0]
-    #     print("teste",machine, features
-    #     )
-
-    #     total_aparicoes = (
-    #         ((df['Valor 1'] == numero) | (df['Valor 2'] == numero) | (df['Valor 3'] == numero)) &
-    #         ((df['Valor 1'] == number1) | (df['Valor 2'] == number1) | (df['Valor 3'] == number1)) &
-    #         ((df['Valor 1'] == number2) | (df['Valor 2'] == number2) | (df['Valor 3'] == number2))
-    #     ).sum()
-
-    #
-
-    #        # Conta as aparições dos valores nas colunas específicas
-    #     count_valor1 = ((df['Valor 1'] == numero) | (df['Valor 1'] == number1)).sum()
-    #     count_valor2 = ((df['Valor 2'] == numero) | (df['Valor 2'] == number1)).sum()
-
-    #     # Calcula a probabilidade
-    #     probabilidade = casos_favoraveis / total_aparicoes if total_aparicoes > 0 else 0
-
-    #     return probabilidade
-
-    # inputs = (numero, number1, number2)  # Os números inseridos
-    # probabilidade = calculate_probability(df, inputs)
-    # print("teste probabilidade: ",probabilidade)
